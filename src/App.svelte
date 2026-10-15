@@ -2,64 +2,78 @@
   import { currentRoute } from "./router.js";
   import NotFoundPage from "./features/common/pages/NotFoundPage.svelte";
 
-  // Mulai unduh chunk halaman bersamaan dengan chunk layout-nya, supaya tidak
-  // berantai (layout selesai dulu, baru halaman). Import yang sama di template
-  // di bawah akan memakai hasil unduhan ini.
-  const pageLoaders = {
-    login: () => import("./features/auth/pages/LoginPage.svelte"),
-    register: () => import("./features/auth/pages/RegisterPage.svelte"),
-    home: () => import("./features/linktrees/pages/HomePage.svelte"),
-    "linktree-detail": () =>
-      import("./features/linktrees/pages/DetailPage.svelte"),
-    users: () => import("./features/users/pages/UsersPage.svelte"),
-    profile: () => import("./features/users/pages/ProfilePage.svelte"),
+  // Setiap route punya layout dan halaman sendiri (code splitting).
+  const routeLoaders = {
+    login: {
+      layout: () => import("./features/auth/layouts/AuthLayout.svelte"),
+      page: () => import("./features/auth/pages/LoginPage.svelte"),
+    },
+    register: {
+      layout: () => import("./features/auth/layouts/AuthLayout.svelte"),
+      page: () => import("./features/auth/pages/RegisterPage.svelte"),
+    },
+    home: {
+      layout: () => import("./features/linktrees/layouts/LinkTreeLayout.svelte"),
+      page: () => import("./features/linktrees/pages/HomePage.svelte"),
+    },
+    "linktree-detail": {
+      layout: () => import("./features/linktrees/layouts/LinkTreeLayout.svelte"),
+      page: () => import("./features/linktrees/pages/DetailPage.svelte"),
+    },
+    users: {
+      layout: () => import("./features/linktrees/layouts/LinkTreeLayout.svelte"),
+      page: () => import("./features/users/pages/UsersPage.svelte"),
+    },
+    profile: {
+      layout: () => import("./features/linktrees/layouts/LinkTreeLayout.svelte"),
+      page: () => import("./features/users/pages/ProfilePage.svelte"),
+    },
   };
 
-  $: if (pageLoaders[$currentRoute.name]) {
-    pageLoaders[$currentRoute.name]();
+  let Layout = null;
+  let Page = null;
+  let pageProps = {};
+  let loadId = 0;
+
+  // Layout dan halaman diunduh BERSAMAAN (tidak berantai) dan baru dipasang
+  // BERSAMAAN juga. Sebelumnya layout tampil lebih dulu dengan slot kosong,
+  // lalu halaman menyusul sehingga kartu/form "melompat" (layout shift).
+  async function loadRoute(route) {
+    const id = ++loadId;
+    const loader = routeLoaders[route.name];
+
+    if (!loader) {
+      Layout = null;
+      Page = NotFoundPage;
+      pageProps = {};
+      return;
+    }
+
+    const [layoutModule, pageModule] = await Promise.all([
+      loader.layout(),
+      loader.page(),
+    ]);
+
+    // Abaikan hasil lama jika pengguna sudah pindah route saat mengunduh.
+    if (id !== loadId) return;
+
+    Layout = layoutModule.default;
+    Page = pageModule.default;
+    pageProps =
+      route.name === "linktree-detail"
+        ? { linkTreeId: route.params.linkTreeId }
+        : {};
   }
+
+  $: loadRoute($currentRoute);
 </script>
 
-<!--
-  Layout dan halaman dimuat per route (code splitting), jadi pengguna yang
-  membuka halaman login tidak ikut mengunduh kode halaman lain.
--->
-{#if $currentRoute.layout === 'auth'}
-  {#await import("./features/auth/layouts/AuthLayout.svelte") then { default: AuthLayout }}
-    <AuthLayout>
-      {#if $currentRoute.name === 'login'}
-        {#await import("./features/auth/pages/LoginPage.svelte") then { default: LoginPage }}
-          <LoginPage />
-        {/await}
-      {:else}
-        {#await import("./features/auth/pages/RegisterPage.svelte") then { default: RegisterPage }}
-          <RegisterPage />
-        {/await}
-      {/if}
-    </AuthLayout>
-  {/await}
-{:else if $currentRoute.layout === 'linktree'}
-  {#await import("./features/linktrees/layouts/LinkTreeLayout.svelte") then { default: LinkTreeLayout }}
-    <LinkTreeLayout>
-      {#if $currentRoute.name === 'home'}
-        {#await import("./features/linktrees/pages/HomePage.svelte") then { default: HomePage }}
-          <HomePage />
-        {/await}
-      {:else if $currentRoute.name === 'linktree-detail'}
-        {#await import("./features/linktrees/pages/DetailPage.svelte") then { default: DetailPage }}
-          <DetailPage linkTreeId={$currentRoute.params.linkTreeId} />
-        {/await}
-      {:else if $currentRoute.name === 'users'}
-        {#await import("./features/users/pages/UsersPage.svelte") then { default: UsersPage }}
-          <UsersPage />
-        {/await}
-      {:else}
-        {#await import("./features/users/pages/ProfilePage.svelte") then { default: ProfilePage }}
-          <ProfilePage />
-        {/await}
-      {/if}
-    </LinkTreeLayout>
-  {/await}
-{:else}
-  <NotFoundPage />
+{#if Page}
+  {#if Layout}
+    <Layout>
+      <Page {...pageProps} />
+    </Layout>
+  {:else}
+    <Page {...pageProps} />
+  {/if}
 {/if}
