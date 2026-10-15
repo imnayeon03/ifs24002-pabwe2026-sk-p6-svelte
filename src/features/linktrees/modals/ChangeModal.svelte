@@ -100,10 +100,10 @@
           <PenLine size={18} strokeWidth={2.5} />
         </div>
         <div>
-          <h3 class="text-base font-bold text-slate-800">
+          <h2 class="text-base font-bold text-slate-800">
             Ubah Data Link Tree
-          </h3>
-          <p class="text-xs text-slate-500">
+          </h2>
+          <p class="text-xs text-slate-600">
             Perbarui judul, visibilitas, dan detail deskripsi Markdown
           </p>
         </div>

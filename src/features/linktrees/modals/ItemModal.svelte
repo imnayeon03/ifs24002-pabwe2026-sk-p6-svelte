@@ -110,9 +110,9 @@
               <Plus size={18} strokeWidth={2.5} />
             {/if}
           </div>
-          <h3 class="text-base font-bold text-slate-800">
+          <h2 class="text-base font-bold text-slate-800">
             {item ? "Ubah Tautan" : "Tambah Tautan Baru"}
-          </h3>
+          </h2>
         </div>
         <button
           type="button"

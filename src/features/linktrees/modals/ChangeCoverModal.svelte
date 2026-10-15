@@ -85,9 +85,9 @@
           >
             <ImagePlus size={18} strokeWidth={2.5} />
           </div>
-          <h3 class="text-base font-bold text-slate-800">
+          <h2 class="text-base font-bold text-slate-800">
             Ubah Cover Link Tree
-          </h3>
+          </h2>
         </div>
         <button
           type="button"
@@ -125,7 +125,7 @@
                 <p class="text-sm font-semibold text-slate-700">
                   Klik untuk memilih foto
                 </p>
-                <p class="text-xs text-slate-500 mt-1">
+                <p class="text-xs text-slate-600 mt-1">
                   PNG, JPG, JPEG (Max. 1MB)
                 </p>
               </div>

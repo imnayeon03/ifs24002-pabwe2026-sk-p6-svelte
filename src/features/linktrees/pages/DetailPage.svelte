@@ -156,7 +156,7 @@
       <div class="p-6 sm:p-8 space-y-6">
         <div class="space-y-3">
           <div class="flex items-center gap-3">
-            <span class="font-mono text-xs font-bold text-slate-400">
+            <span class="font-mono text-xs font-bold text-slate-600">
               {"#" + linkTree.id}
             </span>
             {#if linkTree.type === "public"}
@@ -189,13 +189,13 @@
           </h1>
 
           <div
-            class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400"
+            class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600"
           >
             {#if linkTree.author}
               <div class="flex items-center gap-1.5">
                 <User size={14} class="shrink-0" />
                 <span
-                  >Pembuat: <strong class="text-slate-600"
+                  >Pembuat: <strong class="text-slate-700"
                     >{linkTree.author.name}</strong
                   ></span
                 >
@@ -204,7 +204,7 @@
             <div class="flex items-center gap-1.5">
               <Calendar size={14} class="shrink-0" />
               <span
-                >Dibuat: <strong class="text-slate-500"
+                >Dibuat: <strong class="text-slate-700"
                   >{formatDate(linkTree.created_at)}</strong
                 ></span
               >
@@ -212,7 +212,7 @@
             <div class="flex items-center gap-1.5">
               <Calendar size={14} class="shrink-0" />
               <span
-                >Diperbarui: <strong class="text-slate-500"
+                >Diperbarui: <strong class="text-slate-700"
                   >{formatDate(linkTree.updated_at)}</strong
                 ></span
               >
@@ -227,7 +227,7 @@
           {#if linkTree.description}
             <MarkdownViewer content={linkTree.description} />
           {:else}
-            <p class="italic text-slate-400">
+            <p class="italic text-slate-600">
               Tidak ada deskripsi rinci untuk link tree ini.
             </p>
           {/if}
@@ -248,7 +248,7 @@
           </div>
           <div>
             <h2 class="text-xl font-bold text-slate-800">Daftar Tautan</h2>
-            <p class="text-xs text-slate-400">
+            <p class="text-xs text-slate-600">
               Tautan yang tersedia di halaman ini ({linkTree.items?.length || 0})
             </p>
           </div>
@@ -266,7 +266,7 @@
       </div>
 
       {#if !linkTree.items || linkTree.items.length === 0}
-        <div class="py-10 text-center text-slate-400">
+        <div class="py-10 text-center text-slate-600">
           <Link2 size={32} class="mx-auto text-slate-300 mb-2" />
           <p class="text-sm font-medium">
             Belum ada tautan yang ditambahkan ke link tree ini.

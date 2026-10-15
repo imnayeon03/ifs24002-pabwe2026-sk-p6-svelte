@@ -77,10 +77,10 @@
           <Plus size={18} strokeWidth={2.5} />
         </div>
         <div>
-          <h3 class="text-base font-bold text-slate-800">
+          <h2 class="text-base font-bold text-slate-800">
             Tambah Link Tree Baru
-          </h3>
-          <p class="text-xs text-slate-500">
+          </h2>
+          <p class="text-xs text-slate-600">
             Buat kumpulan tautan baru dan tuliskan detailnya dengan format Markdown
           </p>
         </div>
