@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, fireEvent } from "@testing-library/svelte";
+import { render, fireEvent, waitFor } from "@testing-library/svelte";
 import MarkdownEditor from "./MarkdownEditor.svelte";
 
 let mockEvents = {};
@@ -37,10 +37,11 @@ describe("MarkdownEditor", () => {
     const textarea = container.querySelector('[data-testid="custom-editor-textarea"]');
     expect(textarea).toBeTruthy();
 
+    // Editor dimuat secara lazy (dynamic import), tunggu sampai terinisialisasi
+    await waitFor(() => expect(typeof mockEvents.change).toBe("function"));
+
     // Trigger editor event change
-    if (mockEvents.change) {
-      mockEvents.change();
-    }
+    mockEvents.change();
 
     // Update prop value to different value
     await rerender({ value: "updated prop" });
@@ -62,6 +63,9 @@ describe("MarkdownEditor", () => {
       },
     });
 
+    const EditorMock = (await import("@toast-ui/editor")).default;
+    await waitFor(() => expect(EditorMock).toHaveBeenCalled());
+
     const textarea = container.querySelector("textarea");
     await fireEvent.input(textarea, { target: { value: "manual input" } });
 
@@ -79,9 +83,21 @@ describe("MarkdownEditor", () => {
         value: "fallback text",
       },
     });
+    await waitFor(() => expect(EditorMock).toHaveBeenCalled());
 
     const textarea = container.querySelector("textarea");
     await fireEvent.input(textarea, { target: { value: "manual input fallback" } });
     unmount();
+  });
+
+  it("should not create the Editor when unmounted before the lazy import resolves", async () => {
+    const EditorMock = (await import("@toast-ui/editor")).default;
+    EditorMock.mockClear();
+
+    const { unmount } = render(MarkdownEditor, { props: { value: "x" } });
+    unmount();
+    await new Promise((r) => setTimeout(r, 50));
+
+    expect(EditorMock).not.toHaveBeenCalled();
   });
 });

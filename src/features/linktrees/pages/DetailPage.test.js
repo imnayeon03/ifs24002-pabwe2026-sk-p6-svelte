@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { waitFor } from "@testing-library/svelte";
 import DetailPage from "./DetailPage.svelte";
 import { renderWithProviders } from "../../../test-utils";
 import * as toolsHelper from "../../../helpers/toolsHelper";
@@ -51,7 +52,7 @@ describe("DetailPage", () => {
     expect(wrapper.find(".animate-spin").exists()).toBe(true);
   });
 
-  it("should render full link tree details and items", () => {
+  it("should render full link tree details and items", async () => {
     const { wrapper } = renderWithProviders(DetailPage, {
       props: { linkTreeId: 10 },
       preloadedState: {
@@ -62,7 +63,8 @@ describe("DetailPage", () => {
 
     expect(wrapper.text()).toContain("Detail Tree Title");
     expect(wrapper.text()).toContain("Author Name");
-    expect(wrapper.text()).toContain("Detailed description here");
+    // Markdown viewer dimuat secara lazy
+    await waitFor(() => expect(wrapper.text()).toContain("Detailed description here"));
     expect(wrapper.text()).toContain("Tautan Satu");
     expect(wrapper.text()).toContain("Tautan Dua");
 
