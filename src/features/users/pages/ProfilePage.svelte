@@ -93,6 +93,7 @@
 </script>
 
 {#if !profile}
+  <h1 class="sr-only" aria-label="Profil Akun"></h1>
   <div class="flex flex-col items-center justify-center py-24">
     <LoaderCircle size={36} class="text-indigo-600 animate-spin mb-2" />
     <p class="text-sm font-medium text-slate-600">Memuat data profil...</p>
@@ -135,8 +136,6 @@
           {/if}
           <input
             type="file"
-            id="profile-photo"
-            name="photo"
             data-testid="profile-photo-file-input"
             accept="image/*"
             on:change={handlePhotoUpload}

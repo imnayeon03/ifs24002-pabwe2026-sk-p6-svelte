@@ -61,7 +61,6 @@
 <div class="toastui-editor-wrapper">
   <!-- Fallback hidden textarea with data-testid for accessibility and test compatibility -->
   <textarea
-    name="description"
     data-testid={textareaTestId}
     {value}
     on:input={onTextareaInput}

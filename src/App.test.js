@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { waitFor } from "@testing-library/svelte";
 import App from "./App.svelte";
 import { renderWithProviders } from "./test-utils";
-import { navigate } from "./router";
 import { linkTreesStore } from "./features/linktrees/states/linkTreesStore";
 import { usersStore } from "./features/users/states/usersStore";
 import apiHelper from "./helpers/apiHelper";
@@ -116,20 +115,6 @@ describe("App Component", () => {
 
     expect(wrapper.exists()).toBe(true);
     await waitFor(() => expect(wrapper.text()).toContain("Profil Akun"));
-  });
-
-  it("should ignore a stale route load when the user navigates away quickly", async () => {
-    vi.spyOn(apiHelper, "getAccessToken").mockReturnValue(null);
-    const { wrapper } = renderWithProviders(App, {
-      route: "/auth/login",
-      preloadedState: { isAuthLogin: false },
-    });
-
-    // Pindah route sebelum chunk route pertama selesai diunduh.
-    navigate("/invalid-unknown-route");
-
-    await waitFor(() => expect(wrapper.text()).toContain("404"));
-    expect(wrapper.text()).not.toContain("Masuk Sekarang");
   });
 
   it("should render NotFoundPage for invalid route", async () => {

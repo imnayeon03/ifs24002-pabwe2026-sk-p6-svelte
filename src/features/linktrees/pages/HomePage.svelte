@@ -20,9 +20,7 @@
     UserCheck,
   } from "lucide-svelte";
 
-  // Mulai dari true: tanpa ini tabel sempat menampilkan "Belum ada data" lalu
-  // berganti ke loading lalu ke data (dua kali layout shift).
-  let loadingTrees = true;
+  let loadingTrees = false;
   let filter = "";
   let searchQuery = "";
   let showAddModal = false;
@@ -214,9 +212,6 @@
           />
           <input
             type="text"
-            id="search-linktree"
-            name="search"
-            aria-label="Cari link tree"
             data-testid="search-linktree-input"
             bind:value={searchQuery}
             placeholder="Cari judul atau rincian link tree..."
@@ -275,11 +270,7 @@
           <tbody class="divide-y divide-slate-100">
             {#if loadingTrees}
               <tr>
-                <!-- Tinggi dicadangkan (± 5 baris) supaya saat data tiba tabel tidak melompat -->
-                <td
-                  colspan="6"
-                  class="px-6 py-12 text-center text-slate-600 h-[22rem] align-middle"
-                >
+                <td colspan="6" class="px-6 py-12 text-center text-slate-600">
                   <LoaderCircle
                     size={36}
                     class="mx-auto text-indigo-600 animate-spin mb-2"
@@ -313,10 +304,6 @@
                         <img
                           src={tree.cover}
                           alt={tree.title}
-                          width="40"
-                          height="40"
-                          loading="lazy"
-                          decoding="async"
                           class="w-10 h-10 rounded-lg object-cover border border-slate-200 shrink-0"
                         />
                       {/if}
@@ -410,4 +397,6 @@
       on:close={() => (showChangeModal = false)}
     />
   </div>
+{:else}
+  <h1 class="sr-only" aria-label="Daftar Link Tree"></h1>
 {/if}

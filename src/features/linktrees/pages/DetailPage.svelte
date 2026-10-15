@@ -84,6 +84,7 @@
 </script>
 
 {#if !profile || !linkTree}
+  <h1 class="sr-only" aria-label="Detail Link Tree"></h1>
   <div class="flex flex-col items-center justify-center py-20">
     <div
       class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"

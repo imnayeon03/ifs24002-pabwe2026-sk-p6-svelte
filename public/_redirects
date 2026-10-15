@@ -1,6 +1,1 @@
-# Proxy API supaya request same-origin (tanpa CORS preflight).
-# Hanya terpakai jika VITE_DELCOM_BASEURL di Netlify diisi /api/v1
-/api/v1/*  https://open-api.delcom.org/api/v1/:splat  200
-
-# Fallback SPA
-/*  /index.html  200
+/*    /index.html   200

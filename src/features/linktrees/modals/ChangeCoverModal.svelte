@@ -132,8 +132,6 @@
             {/if}
             <input
               type="file"
-              id="cover-file"
-              name="cover"
               data-testid="cover-file-input"
               accept=".jpg,.jpeg,.png"
               on:change={handleFileChange}
