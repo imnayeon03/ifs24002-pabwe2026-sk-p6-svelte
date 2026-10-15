@@ -212,6 +212,9 @@
           />
           <input
             type="text"
+            id="search-linktree"
+            name="search"
+            aria-label="Cari link tree"
             data-testid="search-linktree-input"
             bind:value={searchQuery}
             placeholder="Cari judul atau rincian link tree..."

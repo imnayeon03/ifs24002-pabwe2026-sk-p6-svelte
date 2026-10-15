@@ -47,6 +47,9 @@
         />
         <input
           type="text"
+          id="search-user"
+          name="search"
+          aria-label="Cari pengguna"
           data-testid="search-user-input"
           bind:value={search}
           placeholder="Cari pengguna berdasarkan nama atau email..."

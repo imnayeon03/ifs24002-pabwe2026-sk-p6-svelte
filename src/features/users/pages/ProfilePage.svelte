@@ -135,6 +135,8 @@
           {/if}
           <input
             type="file"
+            id="profile-photo"
+            name="photo"
             data-testid="profile-photo-file-input"
             accept="image/*"
             on:change={handlePhotoUpload}
