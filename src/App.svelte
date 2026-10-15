@@ -1,6 +1,23 @@
 <script>
   import { currentRoute } from "./router.js";
   import NotFoundPage from "./features/common/pages/NotFoundPage.svelte";
+
+  // Mulai unduh chunk halaman bersamaan dengan chunk layout-nya, supaya tidak
+  // berantai (layout selesai dulu, baru halaman). Import yang sama di template
+  // di bawah akan memakai hasil unduhan ini.
+  const pageLoaders = {
+    login: () => import("./features/auth/pages/LoginPage.svelte"),
+    register: () => import("./features/auth/pages/RegisterPage.svelte"),
+    home: () => import("./features/linktrees/pages/HomePage.svelte"),
+    "linktree-detail": () =>
+      import("./features/linktrees/pages/DetailPage.svelte"),
+    users: () => import("./features/users/pages/UsersPage.svelte"),
+    profile: () => import("./features/users/pages/ProfilePage.svelte"),
+  };
+
+  $: if (pageLoaders[$currentRoute.name]) {
+    pageLoaders[$currentRoute.name]();
+  }
 </script>
 
 <!--
