@@ -4,6 +4,38 @@ import { svelteTesting } from "@testing-library/svelte/vite";
 import tailwindcss from "@tailwindcss/vite";
 import process from "process";
 
+// Memuat CSS hasil build tanpa memblokir render pertama (mengatasi audit
+// "Render blocking requests"). CSS tetap dipasang segera setelah selesai diunduh.
+function nonBlockingCss() {
+  return {
+    name: "non-blocking-css",
+    apply: "build",
+    transformIndexHtml: {
+      order: "post",
+      handler(html, ctx) {
+        let out = html.replace(
+          /<link rel="stylesheet"([^>]*?)href="([^"]+\.css)"([^>]*)>/g,
+          (_m, before, href, after) =>
+            `<link rel="stylesheet"${before}href="${href}"${after} media="print" onload="this.media='all'">` +
+            `<noscript><link rel="stylesheet" href="${href}"></noscript>`
+        );
+
+        // Preload font latin (yang dipakai teks Indonesia) agar tidak telat diunduh
+        const font = Object.keys(ctx.bundle || {}).find((f) =>
+          /plus-jakarta-sans-latin-wght-normal.*\.woff2$/.test(f)
+        );
+        if (font) {
+          out = out.replace(
+            "</head>",
+            `  <link rel="preload" as="font" type="font/woff2" href="/${font}" crossorigin />\n</head>`
+          );
+        }
+        return out;
+      },
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
@@ -14,6 +46,7 @@ export default defineConfig(({ mode }) => {
       }),
       tailwindcss(),
       svelteTesting(),
+      nonBlockingCss(),
     ],
     server: {
       port: Number(env.APP_PORT) || 3004,
